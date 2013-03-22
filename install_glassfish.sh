@@ -19,7 +19,7 @@ function error_msg() {
 }
 
 function cecho() {
-    echo -e "$1"
+    echo -e "[x] $1"
     echo -e "$1" >>"$log"
     tput sgr0;
 }
@@ -86,6 +86,43 @@ function apt_update() {
 }
 
 #### COMMON ENDE ####
+
+check_root
+check_sudo
+check_ubuntu "all"
+
+GLASSFISH_USER=$1
+GLASSFISH_PASS=$2
+GLASSFISH_ADMIN=$3
+GLASSFISH_ADMIN_PASSWORD=$4
+GLASSFISH_VERSION=3.1.2.2
+PASSWORD_FILE=gfpass
+ASADMIN="asadmin --user $GLASSFISH_ADMIN --passwordfile $PASSWORD_FILE "
+PROFILE="/etc/profile"
+
+cecho "creating glassfish user"
+useradd -m -p $2 $1
+
+cecho "installing java as local apt-get repo"
+bash ./java/oab-java.sh -s -7
+
+apt_update
+
+apt-get -y install oracle-java7-jdk >>"$log" 2>&1 &
+
+cecho "create JAVA_HOME"
+export JAVA_HOME="/usr/lib/jvm/java-7-oracle"
+echo "export JAVA_HOME=\"/usr/lib/jvm/java-7-oracle\"" >> $PROFILE
+
+cecho "download glassfish"
+wget http://download.java.net/glassfish/$GLASSFISH_VERSION/release/glassfish-$GLASSFISH_VERSION-unix.sh
+chmod 755 glassfish-$GLASSFISH_VERSION-unix.sh
+
+cecho "create glassfish answer file"
+
+
+
+./glassfish-$GLASSFISH_VERSION-unix.sh -s -a answer.file
 
 
 
