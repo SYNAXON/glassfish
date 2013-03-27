@@ -138,6 +138,15 @@ echo "UpdateTool.Configuration.PROXY_PORT=8888" >> answer.file
 
 ./glassfish-$GLASSFISH_VERSION-unix.sh -s -a answer.file
 
+cecho "setup profile"
+ln -s $GLASSFISH_HOME "/opt/glassfish"
+ln -s /usr/lib/jvm/java-7-oracle "/opt/java"
+
+echo "export GF_HOME=/opt/glassfish" >> $PROFILE
+export GF_HOME=/opt/glassfish
+echo "export PATH=\$PATH:\$GF_HOME/bin" >> $PROFILE
+export PATH=$PATH:$GF_HOME/bin
+
 cecho "create DAS password file"
 rm -f $PASSWORD_FILE > /dev/null 2>&1
 echo "AS_ADMIN_PASSWORD=adminadmin" >> $PASSWORD_FILE

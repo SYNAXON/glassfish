@@ -4,7 +4,7 @@ Automatic Glassfish Installation
 Automatic installation of JAVA, Glassfish and other related stuff.
 
 Steps
-----_
+-----
 
 * We add an user glassfish
 * We create an local apt-get repo for the latest JAVA version
