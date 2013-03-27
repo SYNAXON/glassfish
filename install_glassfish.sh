@@ -31,12 +31,6 @@ function check_root() {
     fi
 }
 
-function check_sudo() {
-    if [ ! -n ${SUDO_USER} ]; then
-        error_msg "ERROR! You must invoke the script using 'sudo'."
-    fi
-}
-
 function check_ubuntu() {
     if [ "${1}" != "" ]; then
         SUPPORTED_CODENAMES="${1}"
@@ -87,7 +81,6 @@ function apt_update() {
 #### COMMON ENDE ####
 
 check_root
-check_sudo
 check_ubuntu "all"
 
 usage()
