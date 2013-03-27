@@ -91,10 +91,26 @@ check_root
 check_sudo
 check_ubuntu "all"
 
-GLASSFISH_USER=$1
-GLASSFISH_PASS=$2
-GLASSFISH_ADMIN=$3
-GLASSFISH_ADMIN_PASSWORD=$4
+usage()
+{
+cat << EOF
+usage: $0 options
+
+This script install java and glassfish on the maschine.
+
+OPTIONS:
+   -h      Show this message
+   -g      glassfish user name
+   -p      glassfish password
+   -a      glassfish DAS admin user 
+   -s      glassfish DAS admin user password
+EOF
+}
+
+GLASSFISH_USER=
+GLASSFISH_PASS=
+GLASSFISH_ADMIN=
+GLASSFISH_ADMIN_PASSWORD=
 GLASSFISH_ADMIN_PORT=4848
 GLASSFISH_VERSION=3.1.2.2
 GLASSFISH_PORT=8080
@@ -103,6 +119,38 @@ GLASSFISH_DOMAIN="domain1"
 PASSWORD_FILE=gfpass
 ASADMIN="asadmin --user $GLASSFISH_ADMIN --passwordfile $PASSWORD_FILE "
 PROFILE="/etc/profile"
+
+while getopts .hg:p:a:s. OPTION
+do
+     case $OPTION in
+         h)
+             usage
+             exit 1
+             ;;
+         g)
+             GLASSFISH_USER=$OPTARG
+             ;;
+         p)
+             GLASSFISH_PASS=$OPTARG
+             ;;
+         a)
+             GLASSFISH_ADMIN=$OPTARG
+             ;;
+         s)
+	     GLASSFISH_ADMIN_PASSWORD=$OPTARG        
+             ;;
+         ?)
+             usage
+             exit
+             ;;
+     esac
+done
+
+if [[ -z $GLASSFISH_USER ]] || [[ -z $GLASSFISH_PASS ]] || [[ -z $GLASSFISH_ADMIN ]] || [[ -z $GLASSFISH_USER ]]
+then
+     usage
+     exit 1
+fi
 
 cecho "creating glassfish user"
 useradd -m -p $2 $1
