@@ -95,7 +95,11 @@ GLASSFISH_USER=$1
 GLASSFISH_PASS=$2
 GLASSFISH_ADMIN=$3
 GLASSFISH_ADMIN_PASSWORD=$4
+GLASSFISH_ADMIN_PORT=4848
 GLASSFISH_VERSION=3.1.2.2
+GLASSFISH_PORT=8080
+GLASSFISH_HOME="/opt/glassfish3"
+GLASSFISH_DOMAIN="domain1"
 PASSWORD_FILE=gfpass
 ASADMIN="asadmin --user $GLASSFISH_ADMIN --passwordfile $PASSWORD_FILE "
 PROFILE="/etc/profile"
@@ -119,10 +123,32 @@ wget http://download.java.net/glassfish/$GLASSFISH_VERSION/release/glassfish-$GL
 chmod 755 glassfish-$GLASSFISH_VERSION-unix.sh
 
 cecho "create glassfish answer file"
-
-
+rm -f answer.file > /dev/null 2>&1
+echo "Domain.Configuration.ADMIN_PASSWORD=$GLASSFISH_ADMIN_PASSWORD" >> answer.file
+echo "Domain.Configuration.ADMIN_PASSWORD_REENTER=$GLASSFISH_ADMIN_PASSWORD" >> answer.file
+echo "Domain.Configuration.ADMIN_PORT=$GLASSFISH_ADMIN_PORT" >> answer.file
+echo "Domain.Configuration.ADMIN_USER=$GLASSFISH_ADMIN" >> answer.file
+echo "Domain.Configuration.DOMAIN_NAME=$GLASSFISH_DOMAIN" >> answer.file
+echo "Domain.Configuration.HTTP_PORT=$GLASSFISH_PORT" >> answer.file
+echo "InstallHome.directory.INSTALL_HOME=$GLASSFISH_HOME" >> answer.file
+echo "UpdateTool.Configuration.ALLOW_UPDATE_CHECK=true" >> answer.file
+echo "UpdateTool.Configuration.BOOTSTRAP_UPDATETOOL=true" >> answer.file
+echo "UpdateTool.Configuration.PROXY_HOST=" >> answer.file
+echo "UpdateTool.Configuration.PROXY_PORT=8888" >> answer.file
 
 ./glassfish-$GLASSFISH_VERSION-unix.sh -s -a answer.file
 
+cecho "create DAS password file"
+rm -f $PASSWORD_FILE > /dev/null 2>&1
+echo "AS_ADMIN_PASSWORD=adminadmin" >> $PASSWORD_FILE
+
+cecho "configure glassfish"
+$ASADMIN create-service --serviceuser $GLASSFISH_USER
+
+cecho "start DAS of Glassfish"
+$ASADMIN start-domain
+
+cecho "securing DAS"
+$ASADMIN enable-secure-admin 
 
 
