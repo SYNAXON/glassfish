@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VER="0.2.7"
+VER="0.0.1"
 
 # check the --fqdn version, if it's absent fall back to hostname
 HOSTNAME=$(hostname --fqdn 2>/dev/null)
@@ -80,9 +80,8 @@ function lsb() {
 }
 
 function apt_update() {
-    ncecho " [x] Update package list "
+    cecho " [x] Update package list "
     apt-get -y update >>"$log" 2>&1 &
-    pid=$!;progress $pid
 }
 
 #### COMMON ENDE ####
@@ -101,7 +100,6 @@ This script install java and glassfish on the maschine.
 OPTIONS:
    -h      Show this message
    -g      glassfish user name
-   -p      glassfish password
    -a      glassfish DAS admin user 
    -s      glassfish DAS admin user password
 EOF
@@ -117,10 +115,9 @@ GLASSFISH_PORT=8080
 GLASSFISH_HOME="/opt/glassfish3"
 GLASSFISH_DOMAIN="domain1"
 PASSWORD_FILE=gfpass
-ASADMIN="asadmin --user $GLASSFISH_ADMIN --passwordfile $PASSWORD_FILE "
 PROFILE="/etc/profile"
 
-while getopts .hg:p:a:s. OPTION
+while getopts .hg:a:s. OPTION
 do
      case $OPTION in
          h)
@@ -129,9 +126,6 @@ do
              ;;
          g)
              GLASSFISH_USER=$OPTARG
-             ;;
-         p)
-             GLASSFISH_PASS=$OPTARG
              ;;
          a)
              GLASSFISH_ADMIN=$OPTARG
@@ -146,14 +140,15 @@ do
      esac
 done
 
-if [[ -z $GLASSFISH_USER ]] || [[ -z $GLASSFISH_PASS ]] || [[ -z $GLASSFISH_ADMIN ]] || [[ -z $GLASSFISH_USER ]]
+if [[ -z $GLASSFISH_USER ]] || [[ -z $GLASSFISH_ADMIN ]] || [[ -z $GLASSFISH_USER ]]
 then
      usage
      exit 1
 fi
 
 cecho "creating glassfish user"
-useradd -U -m -p $GLASSFISH_PASS $GLASSFISH_USER 
+useradd -U -m -s /bin/bash -d /home/glassfish $GLASSFISH_USER 
+passwd $GLASSFISH_USER
 
 cecho "installing java as local apt-get repo"
 bash ./java/oab-java.sh -s -7
@@ -187,8 +182,10 @@ echo "UpdateTool.Configuration.PROXY_PORT=8888" >> answer.file
 ./glassfish-$GLASSFISH_VERSION-unix.sh -s -a answer.file
 
 cecho "setup profile"
-ln -s $GLASSFISH_HOME "/opt/glassfish"
-ln -s /usr/lib/jvm/java-7-oracle "/opt/java"
+ln -s $GLASSFISH_HOME "/opt/glassfish" > /dev/null 2>&1
+ln -s /usr/lib/jvm/java-7-oracle "/opt/java" > /dev/null 2>&1
+
+chown -R $GLASSFISH_USER:$GLASSFISH_USER /opt/*
 
 echo "export GF_HOME=/opt/glassfish" >> $PROFILE
 export GF_HOME=/opt/glassfish
@@ -197,13 +194,14 @@ export PATH=$PATH:$GF_HOME/bin
 
 cecho "create DAS password file"
 rm -f $PASSWORD_FILE > /dev/null 2>&1
-echo "AS_ADMIN_PASSWORD=adminadmin" >> $PASSWORD_FILE
-
-cecho "configure glassfish"
-$ASADMIN create-service --serviceuser $GLASSFISH_USER
+echo "AS_ADMIN_PASSWORD=$GLASSFISH_ADMIN_PASSWORD" >> $PASSWORD_FILE
+ASADMIN="asadmin --user $GLASSFISH_ADMIN --passwordfile $PASSWORD_FILE "
 
 cecho "start DAS of Glassfish"
 $ASADMIN start-domain
+
+cecho "configure glassfish"
+$ASADMIN create-service --serviceuser $GLASSFISH_USER
 
 cecho "securing DAS"
 $ASADMIN enable-secure-admin 
