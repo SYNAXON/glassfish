@@ -153,7 +153,7 @@ then
 fi
 
 cecho "creating glassfish user"
-useradd -m -p $2 $1
+useradd -U -m -p $GLASSFISH_PASS $GLASSFISH_USER 
 
 cecho "installing java as local apt-get repo"
 bash ./java/oab-java.sh -s -7
