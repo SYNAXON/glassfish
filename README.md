@@ -12,3 +12,7 @@ Steps
 * We downlaod and install glassfish
 * We configure the enivirment
 
+Example
+-------
+
+sudo bash install_glassfish.sh -g glassfish -a admin -s adminpasswd
