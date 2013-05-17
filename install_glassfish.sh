@@ -180,7 +180,7 @@ cecho "setup profile"
 ln -s $GLASSFISH_HOME "/opt/glassfish" > /dev/null 2>&1
 ln -s /usr/lib/jvm/java-7-oracle "/opt/java" > /dev/null 2>&1
 
-chown -R $GLASSFISH_USER:$GLASSFISH_USER /opt/*
+chown -R $GLASSFISH_USER:$GLASSFISH_USER $GLASSFISH_HOME/* 
 
 echo "export GF_HOME=/opt/glassfish" >> $PROFILE
 GF_HOME=/opt/glassfish
@@ -202,4 +202,4 @@ $ASADMIN create-service --serviceuser $GLASSFISH_USER
 cecho "securing DAS"
 $ASADMIN enable-secure-admin 
 
-
+chown -R $GLASSFISH_USER:$GLASSFISH_USER $GLASSFISH_HOME/*
