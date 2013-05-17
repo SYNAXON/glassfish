@@ -110,7 +110,7 @@ GLASSFISH_DOMAIN="domain1"
 PASSWORD_FILE=gfpass
 PROFILE="/etc/profile"
 
-while getopts .hg:a:s. OPTION
+while getopts "hg:a:s:" OPTION
 do
      case $OPTION in
          h)
@@ -133,7 +133,7 @@ do
      esac
 done
 
-if [[ -z $GLASSFISH_USER ]] || [[ -z $GLASSFISH_ADMIN ]] || [[ -z $GLASSFISH_USER ]]
+if [[ -z $GLASSFISH_USER ]] || [[ -z $GLASSFISH_ADMIN ]] || [[ -z $GLASSFISH_ADMIN_PASSWORD ]]
 then
      usage
      exit 1
@@ -156,6 +156,7 @@ export JAVA_HOME
 echo "export JAVA_HOME=\"/usr/lib/jvm/java-7-oracle\"" >> $PROFILE
 
 cecho "download glassfish"
+rm -rf glassfish-*unix.sh* > /dev/null 2>&1
 wget http://download.java.net/glassfish/$GLASSFISH_VERSION/release/glassfish-$GLASSFISH_VERSION-unix.sh
 chmod 755 glassfish-$GLASSFISH_VERSION-unix.sh
 
