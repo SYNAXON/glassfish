@@ -151,8 +151,7 @@ apt_update
 apt-get -y install oracle-java7-jdk >>"$log" 2>&1 &
 
 cecho "create JAVA_HOME"
-JAVA_HOME="/usr/lib/jvm/java-7-oracle"
-export JAVA_HOME
+export JAVA_HOME="/usr/lib/jvm/java-7-oracle"
 echo "export JAVA_HOME=\"/usr/lib/jvm/java-7-oracle\"" >> $PROFILE
 
 cecho "download glassfish"
