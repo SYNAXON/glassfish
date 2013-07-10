@@ -140,7 +140,7 @@ then
 fi
 
 cecho "creating glassfish user"
-useradd -U -m -s /bin/bash -d /home/glassfish $GLASSFISH_USER 
+useradd -U -m -s /bin/bash -d /home/$GLASSFISH_USER $GLASSFISH_USER 
 passwd $GLASSFISH_USER
 
 cecho "installing java as local apt-get repo"
