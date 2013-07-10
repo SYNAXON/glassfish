@@ -144,7 +144,7 @@ useradd -U -m -s /bin/bash -d /home/glassfish $GLASSFISH_USER
 passwd $GLASSFISH_USER
 
 cecho "installing java as local apt-get repo"
-bash ./java/oab-java.sh -s -7
+bash ./oab-java6/oab-java.sh -s -7
 
 apt_update
 

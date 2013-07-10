@@ -1,0 +1,3 @@
+[submodule "oab-java6"]
+	path = oab-java6
+	url = https://github.com/flexiondotorg/oab-java6.git
