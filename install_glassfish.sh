@@ -199,6 +199,9 @@ cecho "configure glassfish"
 $ASADMIN create-service --serviceuser $GLASSFISH_USER
 
 cecho "securing DAS"
-$ASADMIN enable-secure-admin 
+$ASADMIN enable-secure-admin
+
+cecho "copy adadminpass to glassfish user"
+cp /root/.asadminpass /home/$GLASSFISH_USER/.asadminpass > /dev/null 2>&1
 
 chown -R $GLASSFISH_USER:$GLASSFISH_USER $GLASSFISH_HOME/*
