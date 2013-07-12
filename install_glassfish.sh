@@ -204,4 +204,4 @@ $ASADMIN enable-secure-admin
 cecho "copy adadminpass to glassfish user"
 cp /root/.asadminpass /home/$GLASSFISH_USER/.asadminpass > /dev/null 2>&1
 
-chown -R $GLASSFISH_USER:$GLASSFISH_USER $GLASSFISH_HOME/*
+chown -R $GLASSFISH_USER:$GLASSFISH_USER $GLASSFISH_HOME
