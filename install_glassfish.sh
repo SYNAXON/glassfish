@@ -204,4 +204,7 @@ $ASADMIN enable-secure-admin
 cecho "copy adadminpass to glassfish user"
 cp /root/.asadminpass /home/$GLASSFISH_USER/.asadminpass > /dev/null 2>&1
 
+cecho "preparing glassfish for cluster installation" > /dev/null 2>&1
+mv $GF_HOME/uninstall.* $GF_HOME/bin
+
 chown -R $GLASSFISH_USER:$GLASSFISH_USER $GLASSFISH_HOME
